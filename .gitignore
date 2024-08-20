@@ -4,3 +4,4 @@ babel.config.js
 package-lock.json
 package.json
 utils.js
+*-main.js
