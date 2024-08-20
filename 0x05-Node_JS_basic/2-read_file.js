@@ -5,30 +5,30 @@ function countStudents(path) {
     const data = fs.readFileSync(path, 'utf8');
     const lines = data.split('\n');
 
-    const studentsPerField = {};
+    const studentsInEachField = {};
 
-    for (let i = 1; i < lines.length; i += 1) {
-      const line = lines[i].trim();
+    for (let x = 1; x < lines.length; x += 1) {
+      const line = lines[x].trim();
       if (line !== '') {
-        const studentData = line.split(',');
-        const firstName = studentData[0];
-        const field = studentData[studentData.length - 1];
+        const studentNames = line.split(',');
+        const firstName = studentNames[0];
+        const field = studentNames[studentNames.length - 1];
 
-        if (!studentsPerField[field]) {
-          studentsPerField[field] = [];
+        if (!studentsInEachField[field]) {
+          studentsInEachField[field] = [];
         }
-        studentsPerField[field].push(firstName);
+        studentsInEachField[field].push(firstName);
       }
     }
 
-    const numberOfStudents = Object.values(studentsPerField)
+    const numOfStudents = Object.values(studentsInEachField)
       .reduce((acc, fieldStudents) => acc + fieldStudents.length, 0);
 
-    console.log(`Number of students: ${numberOfStudents}`);
+    console.log(`Number of students: ${numOfStudents}`);
 
-    for (const field in studentsPerField) {
-      if (Object.prototype.hasOwnProperty.call(studentsPerField, field)) {
-        const fieldStudents = studentsPerField[field];
+    for (const field in studentsInEachField) {
+      if (Object.prototype.hasOwnProperty.call(studentsInEachField, field)) {
+        const fieldStudents = studentsInEachField[field];
         console.log(
           `Number of students in ${field}: ${fieldStudents.length}. List: ${fieldStudents.join(', ')}`,
         );
