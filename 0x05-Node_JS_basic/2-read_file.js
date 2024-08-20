@@ -2,34 +2,44 @@ const fs = require('fs');
 
 function countStudents(path) {
   try {
-    const data = fs.readFileSync(path, 'utf-8');
-    const lines = data.trim().split('\n');
+    const data = fs.readFileSync(path, 'utf8');
+    const lines = data.split('\n');
 
-    if (lines.length <= 1) throw new Error('No data found');
+    const studentsPerField = {};
 
-    const students = lines.slice(1).filter((line) => line.trim() !== '').map((line) => line.split(','));
-    const totalStudents = students.length;
+    for (let i = 1; i < lines.length; i += 1) {
+      const line = lines[i].trim();
+      if (line !== '') {
+        const studentData = line.split(',');
+        const firstName = studentData[0];
+        const field = studentData[studentData.length - 1];
 
-    const fields = {};
-
-    for (const student of students) {
-      const field = student[3];
-      if (!fields[field]) {
-        fields[field] = [];
-      }
-      fields[field].push(student[0]);
-    }
-
-    console.log(`Number of students: ${totalStudents}`);
-    for (const field in fields) {
-      if (Object.prototype.hasOwnProperty.call(fields, field)) {
-        const studentsInField = fields[field].length;
-        const studentList = fields[field].join(', ');
-        console.log(`Number of students in ${field}: ${studentsInField}. List: ${studentList}`);
+        if (!studentsPerField[field]) {
+          studentsPerField[field] = [];
+        }
+        studentsPerField[field].push(firstName);
       }
     }
-  } catch (error) {
-    console.error('Cannot load the database');
+
+    const numberOfStudents = Object.values(studentsPerField)
+      .reduce((acc, fieldStudents) => acc + fieldStudents.length, 0);
+
+    console.log(`Number of students: ${numberOfStudents}`);
+
+    for (const field in studentsPerField) {
+      if (Object.prototype.hasOwnProperty.call(studentsPerField, field)) {
+        const fieldStudents = studentsPerField[field];
+        console.log(
+          `Number of students in ${field}: ${fieldStudents.length}. List: ${fieldStudents.join(', ')}`,
+        );
+      }
+    }
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      console.error('Cannot load the database');
+    } else {
+      throw err;
+    }
   }
 }
 
