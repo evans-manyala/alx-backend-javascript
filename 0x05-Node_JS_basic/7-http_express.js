@@ -8,23 +8,15 @@ app.get('/', (req, res) => {
 });
 
 app.get('/students', async (req, res) => {
+  const databasePath = process.argv[2];
+  let responseText = 'This is the list of our students\n';
+
   try {
-    const databasePath = process.argv[2];
-    let responseText = 'This is the list of our students\n';
-
-    const logCapture = [];
-    const originalLog = console.log;
-
-    console.log = (message) => logCapture.push(message);
-
-    await countStudents(databasePath);
-
-    console.log = originalLog;
-    responseText += logCapture.join('\n');
-
+    const data = await countStudents(databasePath);
+    responseText += data;
     res.send(responseText);
   } catch (err) {
-    res.status(500).send(`Error: ${err.message}`);
+    res.send(`Error: ${err.message}`);
   }
 });
 
