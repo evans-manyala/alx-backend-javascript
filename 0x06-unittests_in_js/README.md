@@ -33,7 +33,7 @@ At the end of this project, you are expected to be able to [explain to anyone](h
 - Your code should use the js extension
 - When running every test with npm run test \*.test.js, everything should pass correctly without any warning or error
 
-## Tasks 0. Basic test with Mocha and Node assertion library
+## Tasks 0: Basic test with Mocha and Node assertion library
 
 Install Mocha using npm:
 
@@ -73,7 +73,7 @@ Requirements:
         > calculateNumber(1.5, 3.7)
         > 6
 
-## Task 1. Combining descriptions
+## Task 1: Combining descriptions
 
 Create a new file named 1-calcul.js:
 
@@ -111,3 +111,23 @@ Expected output
         > 0.2
         > calculateNumber('DIVIDE', 1.4, 0)
         > 'Error'
+
+## Task 2: Basic test using Chai assertion library
+
+While using Node assert library is completely valid, a lot of developers prefer to have a behavior driven development style. This type being easier to read and therefore to maintain.
+
+Let’s install Chai with npm:
+
+- Copy the file 1-calcul.js in a new file 2-calcul_chai.js (same content, same behavior)
+- Copy the file 1-calcul.test.js in a new file 2-calcul_chai.test.js
+- Rewrite the test suite, using expect from Chai
+
+Tips:
+
+- Remember that test coverage is always difficult to maintain. Using an easier style for your tests will help you
+- The easier your tests are to read and understand, the more other engineers will be able to fix them when they are modifying your code
+
+Requirements:
+
+- You should be able to run the test suite using npm test 2-calcul_chai.test.js
+- Every test should pass without any warning
