@@ -30,24 +30,45 @@ describe('Index Page', function() {
   });
 });
 
-describe('Cart Page', () => {
-  it('should return a 200 status code when ID is a number', (done) => {
-    chai.request(app)
-      .get('/cart/123')
-      .end((err, res) => {
-        expect(res).to.have.status(200);
-        done();
-      });
-  });
+describe("Cart page", function() {
+    const validOptions = {
+        url: "http://localhost:7865/cart/123",
+        method: "GET"
+    };
 
-  it('should return a 404 status code when ID is not a number', (done) => {
-    chai.request(app)
-      .get('/cart/abc')
-      .end((err, res) => {
-        expect(res).to.have.status(404);
-        done();
-      });
-  });
+    const invalidOptions = {
+        url: "http://localhost:7865/cart/abc",
+        method: "GET"
+    };
 
-  // Add more tests to check the content of the response
+    it("Verify the correct status code for valid :id", function(done) {
+        request(validOptions, function(err, res, body) {
+            expect(res.statusCode).to.equal(200);
+            done();
+        });
+    });
+
+    it("Verify the correct content for valid :id", function(done) {
+        request(validOptions, function(err, res, body) {
+            expect(body).to.contain("Payment methods for cart 123");
+            done();
+        });
+    });
+
+    it("Verify the status code 404 for invalid :id", function(done) {
+        request(invalidOptions, function(err, res, body) {
+            expect(res.statusCode).to.equal(404);
+            done();
+        });
+    });
+
+    it("Verify the status code 404 for missing :id", function(done) {
+        request({
+            url: "http://localhost:7865/cart/",
+            method: "GET"
+        }, function(err, res, body) {
+            expect(res.statusCode).to.equal(404);
+            done();
+        });
+    });
 });
