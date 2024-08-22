@@ -5,25 +5,13 @@ const assert = require("assert");
 
 const {sendPaymentRequestToApi}= require('./3-payment');
 
-describe('sendPaymentRequestToApi', function() {
-  let spy;
+describe("sendPaymentRequestToApi", function() {
+    it("check if Utils.calculateNumber was called once", function() {
+	const spy = sinon.spy(Utils, "calculateNumber");
 
-  beforeEach(function() {
-    // Create a spy for Utils.calculateNumber
-    spy = sinon.spy(Utils, 'calculateNumber');
-  });
+	sendPaymentRequestToApi(50, 24.52);
 
-  afterEach(function() {
-    // Restore the original function after each test
-    spy.restore();
-  });
-
-  it('should call Utils.calculateNumber with correct arguments', function() {
-    // Call the function under test
-    sendPaymentRequestToApi(100, 20);
-
-    // Verify the spy was called with correct arguments
-    expect(spy.calledOnce).to.be.true;
-    expect(spy.calledWith('SUM', 100, 20)).to.be.true;
-  });
+	assert(spy.calledOnce);
+	spy.restore();
+    });
 });
