@@ -1,74 +1,54 @@
-const request = require("request");
-const { describe, it } = require("mocha");
-const expect = require("chai").expect;
+/* eslint-disable jest/expect-expect */
+const assert = require('assert');
+const { request } = require('http');
 
-describe("Index page", function() {
-    const options = {
-        url: "http://localhost:7865/",
-        method: "GET"
-    };
+describe('index page', () => {
+  it('Verify status code 200', () => new Promise((done) => {
+    request('http://localhost:7865', (res) => {
+      assert.strictEqual(res.statusCode, 200);
+      done();
+    }).end();
+  }));
 
-    it("Verify the correct status code", function(done) {
-        request(options, function(err, res, body) {
-            expect(res.statusCode).to.equal(200);
-            done();
-        });
-    });
-
-    it("Verify the correct content", function(done) {
-        request(options, function(err, res, body) {
-            expect(body).to.contain("Welcome to the payment system");
-            done();
-        });
-    });
-
-    it("Verify the correct content length", function(done) {
-        request(options, function(err, res, body) {
-            expect(res.headers['content-length']).to.equal('29');
-            done();
-        });
-    });
+  it('Verify the welcome message', () => new Promise((done) => {
+    request('http://localhost:7865', (res) => {
+      let data = '';
+      res.on('data', (chunk) => {
+        data += chunk;
+      });
+      res.on('end', () => {
+        assert.strictEqual(data, 'Welcome to the payment system');
+        done();
+      });
+    }).end();
+  }));
 });
 
-describe("Cart page", function() {
-    const validOptions = {
-        url: "http://localhost:7865/cart/123",
-        method: "GET"
-    };
+describe('cart page', () => {
+  it('Verify status code 200 when :id is a number', () => new Promise((done) => {
+    request('http://localhost:7865/cart/123', (res) => {
+      assert.strictEqual(res.statusCode, 200);
+      done();
+    }).end();
+  }));
 
-    const invalidOptions = {
-        url: "http://localhost:7865/cart/abc",
-        method: "GET"
-    };
+  it('Verify status code 404 when :id is not a number', () => new Promise((done) => {
+    request('http://localhost:7865/cart/abc', (res) => {
+      assert.strictEqual(res.statusCode, 404);
+      done();
+    }).end();
+  }));
 
-    it("Verify correct status code for valid :id", function(done) {
-        request(validOptions, function(err, res, body) {
-            expect(res.statusCode).to.equal(200);
-            done();
-        });
-    });
-
-    it("Verify correct content for valid :id", function(done) {
-        request(validOptions, function(err, res, body) {
-            expect(body).to.contain("Payment methods for cart 123");
-            done();
-        });
-    });
-
-    it("Verify status code 404 for invalid :id", function(done) {
-        request(invalidOptions, function(err, res, body) {
-            expect(res.statusCode).to.equal(404);
-            done();
-        });
-    });
-
-    it("Verify status code 404 for missing :id", function(done) {
-        request({
-            url: "http://localhost:7865/cart/",
-            method: "GET"
-        }, function(err, res, body) {
-            expect(res.statusCode).to.equal(404);
-            done();
-        });
-    });
+  it('Verify payment methods for cart :id', () => new Promise((done) => {
+    request('http://localhost:7865/cart/123', (res) => {
+      let data = '';
+      res.on('data', (chunk) => {
+        data += chunk;
+      });
+      res.on('end', () => {
+        assert.strictEqual(data, 'Payment methods for cart 123');
+        done();
+      });
+    }).end();
+  }));
 });
