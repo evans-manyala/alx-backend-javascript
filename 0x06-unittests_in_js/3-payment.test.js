@@ -1,17 +1,20 @@
-// const {describe, it} = require("mocha");
 const sinon = require('sinon');
+const expect = require('chai').expect;
 const Utils = require('./utils');
-const assert = require('assert');
-
-const {sendPaymentRequestToApi} = require('./3-payment');
+const { sendPaymentRequestToApi } = require('./3-payment');
 
 describe('sendPaymentRequestToApi', function() {
-    it("check if Utils.calculateNumber was called once", () => {
-	const watcher = sinon.watcher(Utils, "calculateNumber");
+  it('should call Utils.calculateNumber once', function() {
 
-	sendPaymentRequestToApi(50, 24.52);
+    const spy = sinon.spy(Utils, 'calculateNumber');
+    
 
-	assert(watcher.calledOnce, true);
-	watcher.restore();
-    });
+    sendPaymentRequestToApi(50, 24.52);
+    
+
+    expect(spy.calledOnce).to.be.true;
+    
+
+    spy.restore();
+  });
 });
