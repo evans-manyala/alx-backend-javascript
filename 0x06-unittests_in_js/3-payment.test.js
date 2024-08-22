@@ -1,16 +1,15 @@
-const { describe, it } = require('mocha');
 const sinon = require('sinon');
-const assert = require('assert');
-const sendPaymentRequestToApi = require('./3-payment.js');
-const Utils = require('./utils.js');
+const expect = require('chai').expect;
+const Utils = require('./utils');
+const sendPaymentRequestToApi = require('./3-payment');
 
-describe('sendPaymentRequestToApi', function () {
-  it('should call Utils.calculateNumber with correct arguments', function () {
-    const watcher = sinon.watcher(Utils, 'calculateNumber');
+describe('sendPaymentRequestToApi', () => {
+  it('sendPaymentRequestToApi uses the calculateNumber method of Utils', () => {
+    const watcher = sinon.spy(Utils);
 
     sendPaymentRequestToApi(100, 20);
-
-    assert(watcher.calledOnceWithExactly('SUM', 100, 20), 'Utils.calculateNumber was not called with correct arguments');
-    watcher.restore();
+    expect(watcher.calculateNumber.calledWith('SUM', 100, 20)).to.be.true;
+    expect(watcher.calculateNumber.callCount).to.be.equal(1);
+    watcher.calculateNumber.restore();
   });
 });
