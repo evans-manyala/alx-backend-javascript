@@ -3,18 +3,18 @@ const expect = require('chai').expect;
 const Utils = require('./utils');
 const { sendPaymentRequestToApi } = require('./3-payment');
 
-describe('sendPaymentRequestToApi', function() {
-  it('should call Utils.calculateNumber once', function() {
+describe('sendPaymentRequestToApi', () => {
+  it('should call Utils.calculateNumber once', () => {
 
-    const spy = sinon.spy(Utils, 'calculateNumber');
-    
+    const watcher = sinon.watcher(Utils, 'calculateNumber');
+    const request = sendPaymentRequestToApi(100, 20);
 
-    sendPaymentRequestToApi(50, 24.52);
-    
+    sinon.assert.calledOnce(watcher);
+    expect(watcher.calledOnce).to.be.true;
 
-    expect(spy.calledOnce).to.be.true;
-    
+    expect(watcher.calledOnceWithExactly("SUM", 100, 20)).to.equal(true);
+    expect(utils.calculateNumber("SUM", 100, 20)).to.equal(request);
 
-    spy.restore();
+    watcher.restore();
   });
 });
