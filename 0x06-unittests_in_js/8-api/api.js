@@ -8,3 +8,5 @@ app.get('/', (req, res) => {
 app.listen(7865, () => {
   console.log('API available on http://localhost:7865');
 });
+
+module.exports = app;
