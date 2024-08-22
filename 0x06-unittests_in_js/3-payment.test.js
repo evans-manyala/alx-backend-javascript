@@ -1,17 +1,25 @@
-// const {describe, it} = require("mocha");
 const sinon = require('sinon');
+const { expect } = require('chai');
 const Utils = require('./utils');
-const assert = require('assert');
-
-const {sendPaymentRequestToApi} = require('./3-payment');
+const { sendPaymentRequestToApi } = require('./3-payment');
 
 describe('sendPaymentRequestToApi', function() {
-    it("check if Utils.calculateNumber was called once", function() {
-	const watcher = sinon.watcher(Utils, "calculateNumber");
+  let watcher;
 
-	sendPaymentRequestToApi(50, 24.52);
+  beforeEach(function() {
+    
+    watcher = sinon.watcher(Utils, 'calculateNumber');
+  });
 
-	assert(watcher.calledOnce, true);
-	watcher.restore();
-    });
+  afterEach(function() {
+    watcher.restore();
+  });
+
+  it('should call Utils.calculateNumber with correct arguments', function() {
+
+    sendPaymentRequestToApi(100, 20);
+
+    expect(watcher.calledOnce).to.be.true;
+    expect(watcher.calledWith('SUM', 100, 20)).to.be.true;
+  });
 });
