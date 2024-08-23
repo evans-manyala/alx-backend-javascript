@@ -2,13 +2,12 @@ const fs = require('fs');
 
 function countStudents(path) {
   return new Promise((resolve, reject) => {
+    if (!fs.existsSync(path) || !fs.statSync(path).isFile()) {
+      reject(new Error('Cannot load the database'));
+      return;
+    }
+
     fs.readFile(path, 'utf8', (err, data) => {
-      if (!fs.existsSync(path)) {
-        reject(new Error('Cannot load the database'));
-
-        return;
-      }
-
       if (err) {
         reject(new Error('Cannot load the database'));
         return;
