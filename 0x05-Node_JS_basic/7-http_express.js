@@ -14,7 +14,7 @@ app.get('/students', async (req, res) => {
   res.write('This is the list of our students\n');
 
   if (!fs.existsSync(databasePath)) {
-    res.status(500).end('Error: Cannot load the database');
+    res.end('Cannot load the database');
     return;
   }
 
@@ -22,7 +22,7 @@ app.get('/students', async (req, res) => {
     const studentData = await countStudents(databasePath);
     res.end(studentData);
   } catch (err) {
-    res.status(500).end(`Error: ${err.message}`);
+    res.end(`Error: ${err.message}`);
   }
 });
 
