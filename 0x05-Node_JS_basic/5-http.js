@@ -1,29 +1,25 @@
 const http = require('http');
-const countStudents = require('./3-read_file_async');
+const fs = require('fs');
 
-const app = http.createServer(async (req, res) => {
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
+const app = http.createServer((req, res) => {
+  res.setHeader('Content-Type', 'text/plain');
 
   if (req.url === '/') {
     res.end('Hello Holberton School!');
   } else if (req.url === '/students') {
-    res.write('This is the list of our students\n');
-    const databasePath = process.argv[2];
-
-    try {
-      const studentInfo = await countStudents(databasePath);
-      res.end(studentInfo);
-    } catch (err) {
-      res.end(`Cannot load the database\n${err.message}`);
-    }
+    fs.readFile('students.csv', 'utf8', (err, data) => {
+      if (err) {
+        console.error('Error reading students.csv:', err);
+        res.end('Error reading students.csv');
+      } else {
+        const students = data.split('\n').filter((line) => line.trim() !== '');
+        res.end(`This is the list of our students\n${students.join('\n')}`);
+      }
+    });
   } else {
-    res.writeHead(404);
+    res.statusCode = 404;
     res.end('Not found');
   }
-});
-
-app.listen(1245, () => {
-  console.log('Server listening on port 1245');
 });
 
 module.exports = app;
