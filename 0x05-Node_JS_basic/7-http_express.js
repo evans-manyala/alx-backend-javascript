@@ -13,8 +13,7 @@ app.get('/students', async (req, res) => {
   const databasePath = process.argv[2];
 
   if (!fs.existsSync(databasePath)) {
-    res.status(500).send('This is the list of our students\nError: Cannot load the database');
-    return;
+    return res.status(500).send('This is the list of our students\nError: Cannot load the database');
   }
 
   try {
