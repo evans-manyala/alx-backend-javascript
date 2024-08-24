@@ -10,12 +10,15 @@ const app = http.createServer(async (req, res) => {
     res.write('This is the list of our students\n');
     try {
       const databasePath = process.argv[2];
-      await countStudents(databasePath);
+      const studentInfo = await countStudents(databasePath);
+      res.write(studentInfo);
       res.end();
     } catch (err) {
-      res.end(`Error: ${err.message}`);
+      res.write(`Error: ${err.message}`);
+      res.end();
     }
   } else {
+    res.writeHead(404);
     res.end('Not found');
   }
 });
