@@ -1,70 +1,37 @@
 const http = require('http');
-const { readFile } = require('fs');
+const fs = require('fs');
 
-const hostname = 'localhost';
-const port = 1245;
+// Create the HTTP server
+const app = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
 
-function countstudentData(fileName) {
-  const studentData = {};
-  const fieldName = {};
-  let length = 0;
-  return new Promise((resolve, reject) => {
-    readFile(fileName, (err, data) => {
+  if (req.url === '/') {
+    res.end('Hello Holberton School!');
+  } else if (req.url === '/students') {
+    // Read the CSV file asynchronously
+    fs.readFile('students.csv', 'utf8', (err, data) => {
       if (err) {
-        reject(err);
+        console.error('Error reading students.csv:', err);
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        res.end('Error reading students.csv');
       } else {
-        let response = '';
-        const lines = data.toString().split('\n');
-        for (let i = 0; i < lines.length; i += 1) {
-          if (lines[i]) {
-            length += 1;
-            const field = lines[i].toString().split(',');
-            if (Object.prototype.hasOwnProperty.call(studentData, field[3])) {
-              studentData[field[3]].push(field[0]);
-            } else {
-              studentData[field[3]] = [field[0]];
-            }
-            if (Object.prototype.hasOwnProperty.call(fieldName, field[3])) {
-              fieldName[field[3]] += 1;
-            } else {
-              fieldName[field[3]] = 1;
-            }
-          }
-        }
-        const l = length - 1;
-        response += `Number of studentData: ${l}\n`;
-        for (const [key, value] of Object.entries(fieldName)) {
-          if (key !== 'field') {
-            response += `Number of studentData in ${key}: ${value}. `;
-            response += `List: ${studentData[key].join(', ')}\n`;
-          }
-        }
-        resolve(response);
+        // Parse the CSV data
+        const students = data.split('\n').filter((line) => line.trim() !== '');
+
+        // Display the list of students
+        res.end(`This is the list of our students:\n${students.join('\n')}`);
       }
     });
-  });
-}
-
-const app = http.createServer((request, response) => {
-  response.statusCode = 200;
-  response.setHeader('Content-Type', 'text/plain');
-  if (request.url === '/') {
-    response.write('Hello Holberton School!');
-    response.end();
-  }
-  if (request.url === '/studentData') {
-    response.write('This is the list of our studentData\n');
-    countstudentData(process.argv[2].toString()).then((response) => {
-      const outString = response.slice(0, -1);
-      response.end(outString);
-    }).catch(() => {
-      response.statusCode = 404;
-      response.end('Cannot load the database');
-    });
+  } else {
+    // Handle not found
+    res.writeHead(404, { 'Content-Type': 'text/plain' });
+    res.end('Not found');
   }
 });
 
-app.listen(port, hostname, () => {
+// Start listening on port 1245
+app.listen(1245, () => {
+  console.log('Server is listening on port 1245');
 });
 
 module.exports = app;
