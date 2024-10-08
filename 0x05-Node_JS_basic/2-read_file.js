@@ -6,8 +6,12 @@ function countStudents(path) {
       throw new Error('Cannot load the database');
     }
 
-    const data = fs.readFileSync(path, 'utf8');
+    const data = fs.readFileSync(path, 'utf8').trim();
     const lines = data.split('\n');
+
+    if (lines.length <= 1) {
+      throw new Error('Cannot load the database'); // Handle empty or invalid data
+    }
 
     const studentsInEachField = {};
 
@@ -39,11 +43,8 @@ function countStudents(path) {
       }
     }
   } catch (err) {
-    if (err.code === 'ENOENT') {
-      console.error('Cannot load the database');
-    } else {
-      throw err;
-    }
+    console.error(err.message); // Ensures the error message is printed correctly
+    throw new Error('Cannot load the database');
   }
 }
 
