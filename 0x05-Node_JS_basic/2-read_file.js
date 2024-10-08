@@ -5,12 +5,15 @@ function countStudents(path) {
     const data = fs.readFileSync(path, 'utf8');
     const lines = data.split('\n').filter((line) => line.trim() !== '');
 
-    // Create an object to hold field data from the csv file
-    const fieldCounts = {};
-    const totalStudents = lines.length;
+    // Ensure at least one line exists for headers
+    if (lines.length < 2) {
+      throw new Error('Cannot load the database');
+    }
 
-    // Processing each student line
-    lines.forEach((line) => {
+    const fieldCounts = {};
+
+    // Skip the first line (header) and process the rest
+    lines.slice(1).forEach((line) => {
       const student = line.split(',');
       const firstName = student[0];
       const field = student[3];
@@ -22,6 +25,7 @@ function countStudents(path) {
       fieldCounts[field].names.push(firstName);
     });
 
+    const totalStudents = lines.length - 1; // Adjust total count for headers
     console.log(`Number of students: ${totalStudents}`);
 
     for (const field in fieldCounts) {
@@ -34,7 +38,7 @@ function countStudents(path) {
     }
   } catch (err) {
     if (err.code === 'ENOENT') {
-      console.error('Cannot load the database');
+      throw new Error('Cannot load the database');
     } else {
       console.error('Error reading database:', err);
     }
