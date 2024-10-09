@@ -11,5 +11,6 @@ export default async function handleProfileSignup(firstName, lastName, fileName)
     handlePromise(uploadPhoto(fileName)),
   ];
 
-  return Promise.all(promises);
+  const results = await Promise.all(promises);
+  return results;
 }
