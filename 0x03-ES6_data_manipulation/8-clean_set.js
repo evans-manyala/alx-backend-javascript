@@ -4,7 +4,7 @@ export default function cleanSet(set, startString) {
   }
 
   return [...set]
-    .filter((value) => value.startsWith(startString))
-    .map((value) => value.substring(startString.length))
+    .filter((string) => (string !== undefined ? string.startsWith(startString) : ''))
+    .map((string) => (string !== undefined ? string.slice(startString.length) : ''))
     .join('-');
 }
